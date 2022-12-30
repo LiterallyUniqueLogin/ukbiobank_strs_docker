@@ -1,0 +1,38 @@
+from ubuntu:22.04
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update
+RUN apt-get upgrade
+RUN apt-get install -y wget
+
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN chmod +x Miniconda3-latest-Linux-x86_64.sh
+RUN ./Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda
+ENV PATH="~/miniconda/bin:$PATH"
+
+RUN conda config --set channel_priority true
+RUN conda config --add channels bioconda
+RUN conda config --add channels conda-forge
+RUN conda install mamba -y
+
+RUN mamba update --all -y
+
+COPY ukb.env.yml .
+RUN mamba env create --file=ukb.env.yml
+
+RUN wget https://primus.gs.washington.edu/docroot/versions/PRIMUS_v1.9.0.tgz -P ~
+RUN mkdir ~/PRIMUS_v1.9.0
+RUN tar -xzvf ~/PRIMUS_v1.9.0.tgz -C ~
+RUN conda install perl-app-cpanminus
+RUN cpanm Pod::Usage
+#RUN mamba install perl perl-pod-usage -y
+
+#RUN which conda
+#ENTRYPOINT ["conda", "run", "-n", "ukb"]
+# These don't work
+ENV PATH="$PATH:~/PRIMUS_v1.9.0/bin"
+
+# Could get a different instruction set for AMD processors
+#RUN apt-get install -y unzip
+#RUN wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_avx2_20221024.zip -P ~
+#RUN unzip ~/plink2_linux_avx2_20221024.zip

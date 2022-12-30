@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: continuumio/miniconda3
+
+%files 
+  ukb.env.yml
+
+%post
+  conda init bash
+
+  apt-get update
+  apt-get upgrade -y
+  apt-get install -y wget
+
+  conda config --add channels bioconda
+  conda config --add channels conda-forge
+  conda config --set channel_priority strict
+  conda install mamba -y
+
+  mamba update --all -y
+
+  mamba env update --file=ukb.env.yml
+
+  echo "source activate ukb" >> ~/.bashrc
+
+  wget https://primus.gs.washington.edu/docroot/versions/PRIMUS_v1.9.0.tgz -P ~
+  mkdir ~/PRIMUS_v1.9.0
+  tar -xzvf ~/PRIMUS_v1.9.0.tgz -C ~
+  rm ~/PRIMUS_v1.9.0.tgz
+
+  apt-get install -y unzip
+  # Could get a different instruction set for AMD processors
+  wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_avx2_20221024.zip -P ~
+  unzip ~/plink2_linux_avx2_20221024.zip -d ~/bin
+  rm ~/plink2_linux_avx2_20221024.zip
+
+%environment
+  export PATH="$PATH:~/bin:~/PRIMUS_v1.9.0/bin"
+  
