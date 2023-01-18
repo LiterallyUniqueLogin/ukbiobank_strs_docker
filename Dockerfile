@@ -3,7 +3,10 @@ SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update
 RUN apt-get upgrade -y
+# Utilities for managing the build
 RUN apt-get install -y wget unzip
+# Necessary for firefox (which will be installed via conda) which is necessary for bokeh export plots
+RUN apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb-dev libpci-dev libgl1-mesa-glx
 
 RUN conda config --add channels bioconda
 RUN conda config --add channels conda-forge
@@ -15,6 +18,11 @@ RUN mamba update --all -y
 
 COPY ukb.env.yml .
 RUN mamba env create --file=ukb.env.yml -n ukb
+RUN rm ukb.env.yml
+
+COPY ukb_r.env.yml .
+RUN mamba env create --file=ukb_r.env.yml -n ukb_r
+RUN rm ukb_r.env.yml
 
 RUN mkdir -p /container_install/bin
 ENV PATH="$PATH:/container_install/bin"
@@ -33,7 +41,4 @@ ENV PATH="$PATH:/container_install/PRIMUS_v1.9.0/bin"
 RUN wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_avx2_20221024.zip
 RUN unzip plink2_linux_avx2_20221024.zip -d bin
 RUN rm plink2_linux_avx2_20221024.zip
-
-# Necessary for firefox which is necessary for bokeh export plots
-RUN apt-get install -y libgtk-3-0 libasound2 libdbus-glib-1-2 libx11-xcb-dev libpci-dev libgl1-mesa-glx
 

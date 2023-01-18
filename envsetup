@@ -1,7 +1,12 @@
 #!/bin/bash
 
 source /etc/profile.d/conda.sh
-conda activate ukb
+
+if [[ "$ACTIVATE" ]] ; then
+  conda activate "$ACTIVATE"
+else 
+  conda activate ukb
+fi
 
 # run the command passed as arguments on the command line
 "$@"
