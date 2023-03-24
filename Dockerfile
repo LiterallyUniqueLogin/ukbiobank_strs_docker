@@ -42,8 +42,6 @@ RUN wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_avx2_2022102
 RUN unzip plink2_linux_avx2_20221024.zip -d bin
 RUN rm plink2_linux_avx2_20221024.zip
 
-COPY liftOver /containter_install/bin
-
 # install a trtools branch
 RUN envsetup conda remove --force trtools -y
 RUN mkdir trtools
