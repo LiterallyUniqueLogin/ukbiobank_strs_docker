@@ -47,7 +47,7 @@ RUN rm plink2_linux_avx2_20221024.zip
 # install a trtools branch
 RUN envsetup conda remove --force trtools -y
 RUN mkdir trtools
-RUN git clone https://github.com/gymreklab/TRTools.git trtools --branch compareSTR_upgrade
+RUN git clone https://github.com/gymreklab/TRTools.git trtools --branch associaTR_plotting 
 WORKDIR trtools
 RUN envsetup pip install -e .
 WORKDIR ..
