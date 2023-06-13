@@ -1,8 +1,7 @@
 from continuumio/miniconda3
 SHELL ["/bin/bash", "-c"]
 
-RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y
 # Utilities for managing the build
 RUN apt-get install -y wget unzip
 # Necessary for firefox (which will be installed via conda) which is necessary for bokeh export plots
@@ -47,8 +46,16 @@ RUN rm plink2_linux_avx2_20221024.zip
 # install a trtools branch
 RUN envsetup conda remove --force trtools -y
 RUN mkdir trtools
-RUN git clone https://github.com/gymreklab/TRTools.git trtools --branch associaTR_plotting 
+RUN git clone https://github.com/gymreklab/TRTools.git trtools --branch   associaTR_plotting
 WORKDIR trtools
 RUN envsetup pip install -e .
 WORKDIR ..
+
+RUN wget http://christianbenner.com/finemap_v1.4.2_x86_64.tgz
+RUN tar xzvf finemap_v1.4.2_x86_64.tgz
+RUN chmod +rx finemap_v1.4.2_x86_64
+RUN chmod +rx finemap_v1.4.2_x86_64/finemap_v1.4.2_x86_64
+RUN rm finemap_v1.4.2_x86_64.tgz
+RUN ln -s ../finemap_v1.4.2_x86_64/finemap_v1.4.2_x86_64 bin/finemap
+
 
